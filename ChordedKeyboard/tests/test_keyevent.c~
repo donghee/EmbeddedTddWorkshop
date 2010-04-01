@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include "minunit.h"
+#include "keyevent.h"
+	
+int tests_run= 0;
+
+char * test_sum(){
+	mu_assert("Error, sum 1+2 != 3", 2+2 == 3);
+	return 0;
+}
+
+char * test_keydown_event_count(){
+
+	//key_state=off
+	set_key_state(OFF);
+	//no event
+	mu_assert("Error keydown event occured",!keydown_event_count);
+	//key_state=on
+	set_key_state(ON);
+	//assert keydown event count = 1
+	mu_assert("Error, keydown not occured once",keydown_event_count==1);
+	set_key_state(OFF);set_key_state(ON);
+	mu_assert("Error, keydown not occured twice",keydown_event_count==2);
+	return 0;
+}
+
+char * test_keydown_event() {
+	//key_state=off
+	set_key_state(OFF);
+	//key_state=on
+	set_key_state(ON);
+	//assert keydown event = pressed 
+	mu_assert("Error, key_pressed_event", keydown_event== PRESSED);
+	//key_state=off
+	set_key_state(OFF);
+	//assert keydown event = !pressed 
+	mu_assert("Error, key_released_event", keydown_event== RELEASED);
+	return 0;
+}
+
+char * test_two_keydown_event() {
+	keydown_event_counts[0]=0;
+	keydown_event_counts[1]=0;
+
+	// set_key 0
+	set_key(0);
+	// key_state = off
+	set_key_state(OFF);
+	// set_key 1
+	set_key(1);
+	// key_state = off
+	set_key_state(OFF);
+	// assert 0 keydown event count = 0
+	mu_assert("Error, keydown not occured",!(keydown_event_counts[0]==1));
+	// assert 1 keydown event count = 0
+	mu_assert("Error, keydown not occured",!(keydown_event_counts[1]==1));
+	// set_key 0
+	set_key(0);
+	// key_state = on
+	set_key_state(ON);
+	// set_key 1
+	set_key(1);
+	// key_state = on
+	set_key_state(ON);
+	// assert 0 keydown event count = 1
+	mu_assert("Error, 0 keydown event count != 1", keydown_event_counts[0]==1);
+	// assert 1 keydown event count = 1
+	mu_assert("Error, 1 keydown event count != 1", keydown_event_counts[1]==1);
+	return 0;
+}
+
+	
+/* static char * all_tests() { */
+/* 	//  mu_run_test(test_sum); */
+/* 	mu_run_test(test_keydown_event_count); */
+/* 	mu_run_test(test_keydown_event); */
+/* 	mu_run_test(test_two_keydown_event); */
+/* 	return 0; */
+/* } */
+
+/* int main(int argc, char **argv) { */
+/* 	char *result = all_tests(); */
+/* 	if (result != 0) { */
+/* 		printf("%s\n", result); */
+/* 	} */
+/* 	else { */
+/* 		printf("ALL TESTS PASSED\n"); */
+/* 	} */
+/* 	printf("Tests run: %d\n", tests_run); */
+ 
+/* 	return result != 0; */
+/* } */
