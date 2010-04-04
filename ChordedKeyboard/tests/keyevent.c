@@ -18,6 +18,7 @@ void keydown_event_release_callback() {
 }
 
 //keydown_event_cb=(void *(void))keydown_event_callback;
+void (*keydown_event_cb)(void) = keydown_event_callback;
 
 void set_key(int channel, int state) {
 	_channel=channel;
@@ -28,7 +29,7 @@ void set_key_state(int state) {
 	_key_state=_key_states[_channel];
 
 	if (_key_state==0 && state==1) {
-		keydown_event_callback();
+		keydown_event_cb();
 	}
 
 	if (_key_state==1 && state==0) {
